@@ -1,15 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0d0f14">
 
-<!-- iPhone Home Screen -->
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Day Trainer">
-<link rel="apple-touch-icon" href="icon.png">
 
-<!-- Normal browser icon -->
+<link rel="apple-touch-icon" href="icon.png">
 <link rel="icon" type="image/png" href="icon.png">
 
 <title>Day-of-Week Trainer</title>
@@ -153,6 +153,18 @@ button.active {
   font-size: 15px;
 }
 
+#nextDateBtn {
+  display: none;
+  width: 100%;
+  margin-top: 10px;
+  padding: 17px;
+  font-size: 17px;
+  font-weight: bold;
+  background: white;
+  color: #111;
+  border-color: white;
+}
+
 #feedback {
   min-height: 30px;
   margin: 14px 0;
@@ -163,8 +175,6 @@ button.active {
   background: transparent;
   color: #aaa;
 }
-
-/* ANALYTICS */
 
 #analytics {
   display: none;
@@ -232,13 +242,9 @@ button.active {
   margin-top: 10px;
 }
 
-.filters select {
-  width: 100%;
-}
+.filters select { width: 100%; }
 
-.breakdown {
-  margin-top: 18px;
-}
+.breakdown { margin-top: 18px; }
 
 .breakdown-row {
   display: grid;
@@ -290,16 +296,16 @@ button.active {
   padding: 18px;
 }
 
-@media (max-width: 500px) {
-  main { padding: 14px; }
+@media (max-width:500px) {
+  main { padding:14px; }
 
   .analytics-metrics {
-    grid-template-columns: repeat(2,1fr);
+    grid-template-columns:repeat(2,1fr);
   }
 
   .period-tabs button {
-    font-size: 11px;
-    padding: 10px 2px;
+    font-size:11px;
+    padding:10px 2px;
   }
 }
 </style>
@@ -311,6 +317,7 @@ button.active {
 <h1>Day-of-Week Trainer</h1>
 
 <h3>MONTH CODES</h3>
+
 <div class="mode-grid">
   <button id="sequenceBtn">Sequence</button>
   <button id="positionBtn">Random Position</button>
@@ -318,6 +325,7 @@ button.active {
 </div>
 
 <h3>FORMULA & CALCULATION</h3>
+
 <div class="mode-grid">
   <button id="formulaBtn">Formula Recall</button>
   <button id="componentBtn">Components</button>
@@ -333,11 +341,20 @@ button.active {
 
 <div id="modeName"></div>
 <div id="formula"></div>
+
 <h2 id="prompt"></h2>
+
 <p id="instruction"></p>
+
 <div id="work"></div>
 
-<input id="answer" type="tel" inputmode="numeric" autocomplete="off">
+<input
+  id="answer"
+  type="tel"
+  inputmode="numeric"
+  autocomplete="off"
+>
+
 <button id="checkBtn">Check</button>
 
 <div id="choiceArea"></div>
@@ -354,14 +371,18 @@ button.active {
 
 <h2 id="feedback"></h2>
 
-<button id="restartBtn" class="restart">Restart Mode</button>
+<button id="nextDateBtn">NEXT DATE →</button>
 
+<button id="restartBtn" class="restart">
+  Restart Mode
+</button>
 
-<!-- BIRTHDATE ANALYTICS -->
 
 <section id="analytics">
 
-<h2 class="analytics-title">Birthdate Stats</h2>
+<h2 class="analytics-title">
+  Birthdate Stats
+</h2>
 
 <div class="period-tabs">
   <button data-period="day">Day</button>
@@ -377,6 +398,7 @@ button.active {
 </div>
 
 <div class="analytics-metrics">
+
   <div class="metric">
     <strong id="statAttempts">0</strong>
     <small>ATTEMPTS</small>
@@ -396,6 +418,7 @@ button.active {
     <strong id="statBest">—</strong>
     <small>BEST</small>
   </div>
+
 </div>
 
 <h3>FILTER TESTED DATES</h3>
@@ -455,12 +478,13 @@ button.active {
 
 <script>
 
-/* ================================
-   DATA
-================================ */
+/* DATA */
 
-const monthCodes = [6,2,2,5,0,3,5,1,4,6,2,4];
-const sequence = monthCodes.join("");
+const monthCodes =
+  [6,2,2,5,0,3,5,1,4,6,2,4];
+
+const sequence =
+  monthCodes.join("");
 
 const months = [
   "January","February","March","April",
@@ -474,43 +498,78 @@ const weekdays = [
 ];
 
 
-/* ================================
-   ELEMENTS
-================================ */
+/* ELEMENTS */
 
-const answer = document.getElementById("answer");
-const checkBtn = document.getElementById("checkBtn");
+const answer =
+  document.getElementById("answer");
 
-const promptEl = document.getElementById("prompt");
-const instruction = document.getElementById("instruction");
-const feedback = document.getElementById("feedback");
-const formulaEl = document.getElementById("formula");
-const work = document.getElementById("work");
-const modeName = document.getElementById("modeName");
+const checkBtn =
+  document.getElementById("checkBtn");
 
-const scoreEl = document.getElementById("score");
-const streakEl = document.getElementById("streak");
-const timeEl = document.getElementById("time");
+const nextDateBtn =
+  document.getElementById("nextDateBtn");
 
-const choiceArea = document.getElementById("choiceArea");
-const weekdayArea = document.getElementById("weekdayArea");
+const promptEl =
+  document.getElementById("prompt");
 
-const analytics = document.getElementById("analytics");
+const instruction =
+  document.getElementById("instruction");
+
+const feedback =
+  document.getElementById("feedback");
+
+const formulaEl =
+  document.getElementById("formula");
+
+const work =
+  document.getElementById("work");
+
+const modeName =
+  document.getElementById("modeName");
+
+const scoreEl =
+  document.getElementById("score");
+
+const streakEl =
+  document.getElementById("streak");
+
+const timeEl =
+  document.getElementById("time");
+
+const choiceArea =
+  document.getElementById("choiceArea");
+
+const weekdayArea =
+  document.getElementById("weekdayArea");
+
+const analytics =
+  document.getElementById("analytics");
 
 const modeButtons = {
-  sequence: document.getElementById("sequenceBtn"),
-  position: document.getElementById("positionBtn"),
-  month: document.getElementById("monthBtn"),
-  formula: document.getElementById("formulaBtn"),
-  component: document.getElementById("componentBtn"),
-  guided: document.getElementById("guidedBtn"),
-  birthdate: document.getElementById("birthdateBtn")
+  sequence:
+    document.getElementById("sequenceBtn"),
+
+  position:
+    document.getElementById("positionBtn"),
+
+  month:
+    document.getElementById("monthBtn"),
+
+  formula:
+    document.getElementById("formulaBtn"),
+
+  component:
+    document.getElementById("componentBtn"),
+
+  guided:
+    document.getElementById("guidedBtn"),
+
+  birthdate:
+    document.getElementById("birthdateBtn")
 };
 
 
-/* ================================
-   STATE
-================================ */
+/* STATE */
 
 let mode = "sequence";
 
@@ -531,21 +590,25 @@ let birthdateStart = null;
 let birthdateLocked = false;
 
 
-/* ================================
-   HISTORY STORAGE
-================================ */
+/* SAVED HISTORY */
 
-const STORAGE_KEY = "dayTrainerBirthdateHistoryV1";
+const STORAGE_KEY =
+  "dayTrainerBirthdateHistoryV1";
 
 function loadHistory() {
   try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    return (
+      JSON.parse(
+        localStorage.getItem(STORAGE_KEY)
+      ) || []
+    );
   } catch {
     return [];
   }
 }
 
-let birthdateHistory = loadHistory();
+let birthdateHistory =
+  loadHistory();
 
 function saveHistory() {
   localStorage.setItem(
@@ -555,16 +618,23 @@ function saveHistory() {
 }
 
 
-/* ================================
-   HELPERS
-================================ */
+/* HELPERS */
 
 function shuffle(array) {
   const copy = [...array];
 
-  for (let i = copy.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i],copy[j]] = [copy[j],copy[i]];
+  for (
+    let i = copy.length - 1;
+    i > 0;
+    i--
+  ) {
+    const j =
+      Math.floor(
+        Math.random() * (i + 1)
+      );
+
+    [copy[i],copy[j]] =
+      [copy[j],copy[i]];
   }
 
   return copy;
@@ -598,9 +668,11 @@ function markCorrect() {
 
 function markWrong(correctAnswer) {
   streak = 0;
+
   streakEl.textContent = "0";
 
-  feedback.textContent = "✕ " + correctAnswer;
+  feedback.textContent =
+    "✕ " + correctAnswer;
 }
 
 function hideInputs() {
@@ -608,6 +680,7 @@ function hideInputs() {
   checkBtn.style.display = "none";
   choiceArea.style.display = "none";
   weekdayArea.style.display = "none";
+  nextDateBtn.style.display = "none";
 }
 
 function clearDisplay() {
@@ -622,7 +695,9 @@ function clearDisplay() {
   hideInputs();
 }
 
-function showNumberInput(withCheck = false) {
+function showNumberInput(
+  withCheck = false
+) {
   hideInputs();
 
   answer.style.display = "block";
@@ -632,57 +707,96 @@ function showNumberInput(withCheck = false) {
     checkBtn.style.display = "block";
   }
 
-  setTimeout(() => answer.focus(),50);
+  setTimeout(
+    () => answer.focus(),
+    50
+  );
 }
 
 function setActiveButton() {
-  Object.values(modeButtons).forEach(btn =>
-    btn.classList.remove("active")
-  );
+  Object
+    .values(modeButtons)
+    .forEach(
+      btn =>
+        btn.classList.remove(
+          "active"
+        )
+    );
 
-  modeButtons[mode].classList.add("active");
+  modeButtons[mode]
+    .classList.add("active");
 }
 
 
-/* ================================
-   DATE MATH
-================================ */
+/* DATE CALCULATION */
 
 function isLeapYear(year) {
   return (
     year % 400 === 0 ||
-    (year % 4 === 0 && year % 100 !== 0)
+    (
+      year % 4 === 0 &&
+      year % 100 !== 0
+    )
   );
 }
 
 function generateDate() {
+
   const year =
-    1900 + Math.floor(Math.random() * 200);
+    1900 +
+    Math.floor(
+      Math.random() * 200
+    );
 
   const month =
-    Math.floor(Math.random() * 12);
+    Math.floor(
+      Math.random() * 12
+    );
 
   const days =
-    new Date(year,month + 1,0).getDate();
+    new Date(
+      year,
+      month + 1,
+      0
+    ).getDate();
 
   const day =
-    1 + Math.floor(Math.random() * days);
+    1 +
+    Math.floor(
+      Math.random() * days
+    );
 
-  return {year,month,day};
+  return {
+    year,
+    month,
+    day
+  };
 }
 
 function calculate(d) {
-  const Y = d.year % 100;
-  const Q = Math.floor(Y / 4);
-  const B = d.year < 2000 ? 1 : 0;
+
+  const Y =
+    d.year % 100;
+
+  const Q =
+    Math.floor(Y / 4);
+
+  const B =
+    d.year < 2000
+      ? 1
+      : 0;
 
   const L =
-    isLeapYear(d.year) && d.month <= 1
+    isLeapYear(d.year) &&
+    d.month <= 1
       ? -1
       : 0;
 
-  const M = monthCodes[d.month];
-  const D = d.day;
+  const M =
+    monthCodes[d.month];
+
+  const D =
+    d.day;
 
   const total =
     Y + Q + B + L + M + D;
@@ -690,24 +804,32 @@ function calculate(d) {
   const remainder =
     ((total % 7) + 7) % 7;
 
-  return {Y,Q,B,L,M,D,total,remainder};
+  return {
+    Y,Q,B,L,M,D,
+    total,
+    remainder
+  };
 }
 
 function formatDate(d) {
-  return `${months[d.month]} ${d.day}, ${d.year}`;
+  return (
+    `${months[d.month]} ` +
+    `${d.day}, ${d.year}`
+  );
 }
 
 
-/* ================================
-   MONTH DRILLS
-================================ */
+/* MONTH TRAINING */
 
 function nextFromDeck(type) {
 
   if (type === "position") {
+
     if (!positionDeck.length) {
       positionDeck =
-        shuffle([...Array(12).keys()]);
+        shuffle(
+          [...Array(12).keys()]
+        );
     }
 
     return positionDeck.pop();
@@ -715,7 +837,9 @@ function nextFromDeck(type) {
 
   if (!monthDeck.length) {
     monthDeck =
-      shuffle([...Array(12).keys()]);
+      shuffle(
+        [...Array(12).keys()]
+      );
   }
 
   return monthDeck.pop();
@@ -724,7 +848,8 @@ function nextFromDeck(type) {
 function startSequence() {
   clearDisplay();
 
-  modeName.textContent = "SEQUENCE";
+  modeName.textContent =
+    "SEQUENCE";
 
   instruction.textContent =
     "Type all 12 month codes from memory";
@@ -769,95 +894,126 @@ function newMonthQuestion() {
 }
 
 
-/* ================================
-   FORMULA RECALL
-================================ */
+/* FORMULA */
 
 const formulaParts = [
-  ["___ + ⌊Y/4⌋ + B + L + M + D",
-   ["Y","B","M"],"Y"],
 
-  ["Y + ___ + B + L + M + D",
-   ["⌊Y/4⌋","Y/2","B"],"⌊Y/4⌋"],
+  [
+    "___ + ⌊Y/4⌋ + B + L + M + D",
+    ["Y","B","M"],
+    "Y"
+  ],
 
-  ["Y + ⌊Y/4⌋ + ___ + L + M + D",
-   ["B","M","D"],"B"],
+  [
+    "Y + ___ + B + L + M + D",
+    ["⌊Y/4⌋","Y/2","B"],
+    "⌊Y/4⌋"
+  ],
 
-  ["Y + ⌊Y/4⌋ + B + ___ + M + D",
-   ["L","B","Y"],"L"],
+  [
+    "Y + ⌊Y/4⌋ + ___ + L + M + D",
+    ["B","M","D"],
+    "B"
+  ],
 
-  ["Y + ⌊Y/4⌋ + B + L + ___ + D",
-   ["M","D","B"],"M"],
+  [
+    "Y + ⌊Y/4⌋ + B + ___ + M + D",
+    ["L","B","Y"],
+    "L"
+  ],
 
-  ["Y + ⌊Y/4⌋ + B + L + M + ___",
-   ["D","Y","L"],"D"]
+  [
+    "Y + ⌊Y/4⌋ + B + L + ___ + D",
+    ["M","D","B"],
+    "M"
+  ],
+
+  [
+    "Y + ⌊Y/4⌋ + B + L + M + ___",
+    ["D","Y","L"],
+    "D"
+  ]
 ];
 
 function newFormulaQuestion() {
+
   clearDisplay();
 
   if (!formulaDeck.length) {
     formulaDeck =
-      shuffle([...Array(6).keys()]);
+      shuffle(
+        [...Array(6).keys()]
+      );
   }
 
   const q =
-    formulaParts[formulaDeck.pop()];
+    formulaParts[
+      formulaDeck.pop()
+    ];
 
   modeName.textContent =
     "FORMULA RECALL";
 
-  formulaEl.textContent = q[0];
+  formulaEl.textContent =
+    q[0];
 
   instruction.textContent =
     "What belongs in the blank?";
 
-  choiceArea.style.display = "grid";
+  choiceArea.style.display =
+    "grid";
 
-  shuffle(q[1]).forEach(choice => {
+  shuffle(q[1])
+    .forEach(choice => {
 
-    const btn =
-      document.createElement("button");
-
-    btn.textContent = choice;
-
-    btn.onclick = () => {
-
-      startTimer();
-
-      if (choice === q[2]) {
-        markCorrect();
-
-        setTimeout(
-          newFormulaQuestion,
-          350
+      const btn =
+        document.createElement(
+          "button"
         );
-      } else {
-        markWrong(q[2]);
 
-        setTimeout(
-          newFormulaQuestion,
-          700
-        );
-      }
-    };
+      btn.textContent =
+        choice;
 
-    choiceArea.appendChild(btn);
-  });
+      btn.onclick = () => {
+
+        startTimer();
+
+        if (
+          choice === q[2]
+        ) {
+          markCorrect();
+
+          setTimeout(
+            newFormulaQuestion,
+            350
+          );
+        } else {
+          markWrong(q[2]);
+
+          setTimeout(
+            newFormulaQuestion,
+            700
+          );
+        }
+      };
+
+      choiceArea
+        .appendChild(btn);
+    });
 }
 
 
-/* ================================
-   COMPONENTS
-================================ */
+/* COMPONENTS */
 
 const componentNames =
   ["Y","Q","B","L","M","D"];
 
 function newComponentQuestion() {
+
   clearDisplay();
 
-  currentDate = generateDate();
+  currentDate =
+    generateDate();
 
   currentComponent =
     componentNames[
@@ -897,7 +1053,8 @@ function checkComponent() {
 
   startTimer();
 
-  const v = calculate(currentDate);
+  const v =
+    calculate(currentDate);
 
   const expected = {
     Y:v.Y,
@@ -911,7 +1068,9 @@ function checkComponent() {
   const typed =
     Number(answer.value);
 
-  if (typed === expected) {
+  if (
+    typed === expected
+  ) {
     markCorrect();
 
     setTimeout(
@@ -929,9 +1088,7 @@ function checkComponent() {
 }
 
 
-/* ================================
-   GUIDED
-================================ */
+/* GUIDED */
 
 const guidedLabels = [
   "Find Y",
@@ -945,9 +1102,12 @@ const guidedLabels = [
 ];
 
 function newGuidedDate() {
+
   clearDisplay();
 
-  currentDate = generateDate();
+  currentDate =
+    generateDate();
+
   guidedStep = 0;
 
   modeName.textContent =
@@ -966,17 +1126,26 @@ function newGuidedDate() {
 }
 
 function guidedValues() {
-  const v = calculate(currentDate);
+
+  const v =
+    calculate(currentDate);
 
   return [
-    v.Y,v.Q,v.B,v.L,
-    v.M,v.D,v.total,v.remainder
+    v.Y,
+    v.Q,
+    v.B,
+    v.L,
+    v.M,
+    v.D,
+    v.total,
+    v.remainder
   ];
 }
 
 function updateGuidedWork() {
 
-  const v = calculate(currentDate);
+  const v =
+    calculate(currentDate);
 
   const pieces = [
     `Y=${v.Y}`,
@@ -991,7 +1160,10 @@ function updateGuidedWork() {
     pieces
       .slice(
         0,
-        Math.min(guidedStep,6)
+        Math.min(
+          guidedStep,
+          6
+        )
       )
       .join(" • ");
 }
@@ -1006,12 +1178,16 @@ function checkGuided() {
   startTimer();
 
   const expected =
-    guidedValues()[guidedStep];
+    guidedValues()[
+      guidedStep
+    ];
 
   const typed =
     Number(answer.value);
 
-  if (typed !== expected) {
+  if (
+    typed !== expected
+  ) {
     feedback.textContent =
       "✕ TRY AGAIN";
 
@@ -1021,7 +1197,8 @@ function checkGuided() {
     return;
   }
 
-  feedback.textContent = "✓";
+  feedback.textContent =
+    "✓";
 
   guidedStep++;
 
@@ -1029,10 +1206,13 @@ function checkGuided() {
     guidedStep <
     guidedLabels.length
   ) {
+
     updateGuidedWork();
 
     instruction.textContent =
-      guidedLabels[guidedStep];
+      guidedLabels[
+        guidedStep
+      ];
 
     answer.value = "";
     answer.focus();
@@ -1040,13 +1220,17 @@ function checkGuided() {
     return;
   }
 
-  const v = calculate(currentDate);
+  const v =
+    calculate(currentDate);
 
   score++;
   streak++;
 
-  scoreEl.textContent = score;
-  streakEl.textContent = streak;
+  scoreEl.textContent =
+    score;
+
+  streakEl.textContent =
+    streak;
 
   formulaEl.textContent =
     `${v.Y} + ${v.Q} + ${v.B} + ${v.L} + ${v.M} + ${v.D} = ${v.total}`;
@@ -1066,22 +1250,25 @@ function checkGuided() {
 }
 
 
-/* ================================
+/* =========================
    BIRTHDATE TEST
-================================ */
+========================= */
 
 function newBirthdateTest() {
+
   clearDisplay();
 
-  currentDate = generateDate();
+  currentDate =
+    generateDate();
 
-  birthdateLocked = false;
+  birthdateLocked =
+    false;
 
   modeName.textContent =
     "BIRTHDATE TEST";
 
-  /* Nothing except the birthdate
-     and question is revealed. */
+  /* BEFORE ANSWERING:
+     NO FORMULA OR HINTS */
 
   promptEl.textContent =
     formatDate(currentDate);
@@ -1092,59 +1279,110 @@ function newBirthdateTest() {
   weekdayArea.style.display =
     "grid";
 
+  /* Timer begins only when
+     the new date is shown */
+
   birthdateStart =
     performance.now();
 }
 
-function submitBirthdate(chosen) {
 
-  if (birthdateLocked) return;
+function submitBirthdate(
+  chosen
+) {
 
-  birthdateLocked = true;
+  if (birthdateLocked)
+    return;
+
+  birthdateLocked =
+    true;
+
+  /* STOP RESPONSE TIMER
+     IMMEDIATELY */
 
   const elapsed =
-    (performance.now() -
-      birthdateStart) / 1000;
+    (
+      performance.now() -
+      birthdateStart
+    ) / 1000;
 
   const v =
     calculate(currentDate);
 
   const correct =
-    chosen === v.remainder;
+    chosen ===
+    v.remainder;
+
+  /* Hide choices so there
+     cannot be a second answer */
+
+  weekdayArea.style.display =
+    "none";
 
   if (correct) {
+
     markCorrect();
+
     feedback.textContent =
-      "✓ CORRECT";
+      `✓ CORRECT — ${weekdays[v.remainder]}`;
+
   } else {
-    markWrong(
-      weekdays[v.remainder]
-    );
+
+    streak = 0;
+
+    streakEl.textContent =
+      "0";
+
+    feedback.textContent =
+      `✕ ${weekdays[chosen]} → ${weekdays[v.remainder]}`;
   }
 
-  /* Formula appears only
-     AFTER answering. */
+  /* SOLUTION */
 
   formulaEl.textContent =
     `${v.Y} + ${v.Q} + ${v.B} + ${v.L} + ${v.M} + ${v.D} = ${v.total}`;
 
-  work.textContent =
-    `${v.total} mod 7 = ${v.remainder} → ${weekdays[v.remainder]} • ${elapsed.toFixed(1)}s`;
+  work.innerHTML =
+    `
+    ${v.total} mod 7 = ${v.remainder}
+    → <strong>${weekdays[v.remainder]}</strong>
+    <br>
+    Response time:
+    <strong>${elapsed.toFixed(1)}s</strong>
+    `;
 
-  const attempt = {
-    timestamp: Date.now(),
+  instruction.textContent =
+    "Review the solution. Move on when you're ready.";
 
-    testYear: currentDate.year,
-    testMonth: currentDate.month,
-    testDay: currentDate.day,
+  /* SAVE ATTEMPT */
 
-    correctWeekday: v.remainder,
-    chosenWeekday: chosen,
+  birthdateHistory.push({
 
-    correct: correct,
+    timestamp:
+      Date.now(),
+
+    testYear:
+      currentDate.year,
+
+    testMonth:
+      currentDate.month,
+
+    testDay:
+      currentDate.day,
+
+    correctWeekday:
+      v.remainder,
+
+    chosenWeekday:
+      chosen,
+
+    correct:
+      correct,
 
     seconds:
-      Math.round(elapsed * 100) / 100,
+      Math.round(
+        elapsed * 100
+      ) / 100,
 
     century:
       currentDate.year < 2000
@@ -1152,194 +1390,279 @@ function submitBirthdate(chosen) {
         : 2000,
 
     leapAdjustment:
-      isLeapYear(currentDate.year) &&
+      isLeapYear(
+        currentDate.year
+      ) &&
       currentDate.month <= 1
-  };
 
-  birthdateHistory.push(attempt);
+  });
+
   saveHistory();
 
   renderAnalytics();
 
-  setTimeout(
-    newBirthdateTest,
-    1700
-  );
+  /* IMPORTANT:
+     NO AUTO ADVANCE */
+
+  nextDateBtn.style.display =
+    "block";
 }
 
+
+/* NEXT DATE BUTTON */
+
+nextDateBtn.onclick =
+  () => {
+
+    if (
+      mode !== "birthdate"
+    ) return;
+
+    newBirthdateTest();
+  };
+
+
+/* WEEKDAY BUTTONS */
+
 document
-.querySelectorAll("#weekdayArea button")
+.querySelectorAll(
+  "#weekdayArea button"
+)
 .forEach(btn => {
 
-  btn.onclick = () => {
+  btn.onclick =
+    () => {
 
-    if (mode !== "birthdate")
-      return;
+      if (
+        mode !== "birthdate"
+      ) return;
 
-    submitBirthdate(
-      Number(btn.dataset.day)
-    );
-  };
+      submitBirthdate(
+        Number(
+          btn.dataset.day
+        )
+      );
+    };
 });
 
 
-/* ================================
-   MAIN INPUT HANDLER
-================================ */
+/* INPUT HANDLING */
 
-answer.addEventListener("input",() => {
+answer.addEventListener(
+  "input",
+  () => {
 
-  answer.value =
-    answer.value.replace(
-      /[^0-9-]/g,
-      ""
-    );
+    answer.value =
+      answer.value.replace(
+        /[^0-9-]/g,
+        ""
+      );
 
-  if (mode === "sequence") {
+    if (
+      mode === "sequence"
+    ) {
 
-    startTimer();
+      startTimer();
 
-    const typed = answer.value;
+      const typed =
+        answer.value;
 
-    if (sequence.startsWith(typed)) {
+      if (
+        sequence.startsWith(
+          typed
+        )
+      ) {
 
-      feedback.textContent = "✓";
+        feedback.textContent =
+          "✓";
 
-      if (typed === sequence) {
+        if (
+          typed === sequence
+        ) {
+
+          markCorrect();
+
+          feedback.textContent =
+            "✓ FULL RUN";
+
+          setTimeout(
+            () => {
+
+              answer.value =
+                "";
+
+              feedback.textContent =
+                "GO AGAIN";
+
+              answer.focus();
+
+            },
+            500
+          );
+        }
+
+      } else {
+
+        streak = 0;
+
+        streakEl.textContent =
+          "0";
+
+        feedback.textContent =
+          "✕ START AGAIN";
+
+        answer.value = "";
+      }
+
+      return;
+    }
+
+    if (
+      mode === "position" ||
+      mode === "month"
+    ) {
+
+      if (
+        answer.value === ""
+      ) return;
+
+      startTimer();
+
+      const typed =
+        Number(
+          answer.value
+        );
+
+      const expected =
+        monthCodes[
+          currentIndex
+        ];
+
+      answer.value = "";
+
+      if (
+        typed === expected
+      ) {
 
         markCorrect();
 
-        feedback.textContent =
-          "✓ FULL RUN";
+        setTimeout(
+          mode === "position"
+            ? newPositionQuestion
+            : newMonthQuestion,
+          300
+        );
 
-        setTimeout(() => {
-          answer.value = "";
-          feedback.textContent =
-            "GO AGAIN";
-          answer.focus();
-        },500);
+      } else {
+
+        markWrong(
+          expected
+        );
+
+        setTimeout(
+          mode === "position"
+            ? newPositionQuestion
+            : newMonthQuestion,
+          700
+        );
       }
-
-    } else {
-
-      streak = 0;
-      streakEl.textContent = "0";
-
-      feedback.textContent =
-        "✕ START AGAIN";
-
-      answer.value = "";
-    }
-
-    return;
-  }
-
-  if (
-    mode === "position" ||
-    mode === "month"
-  ) {
-
-    if (answer.value === "")
-      return;
-
-    startTimer();
-
-    const typed =
-      Number(answer.value);
-
-    const expected =
-      monthCodes[currentIndex];
-
-    answer.value = "";
-
-    if (typed === expected) {
-      markCorrect();
-
-      setTimeout(
-        mode === "position"
-          ? newPositionQuestion
-          : newMonthQuestion,
-        300
-      );
-    } else {
-      markWrong(expected);
-
-      setTimeout(
-        mode === "position"
-          ? newPositionQuestion
-          : newMonthQuestion,
-        700
-      );
     }
   }
-});
+);
 
 
-/* Check button */
+/* CHECK BUTTON */
 
-checkBtn.onclick = () => {
+checkBtn.onclick =
+  () => {
 
-  if (mode === "component") {
-    checkComponent();
-  }
+    if (
+      mode === "component"
+    ) {
+      checkComponent();
+    }
 
-  if (mode === "guided") {
-    checkGuided();
-  }
-};
+    if (
+      mode === "guided"
+    ) {
+      checkGuided();
+    }
+  };
 
-/* Enter also submits */
 
 answer.addEventListener(
   "keydown",
   e => {
 
-    if (e.key !== "Enter")
-      return;
+    if (
+      e.key !== "Enter"
+    ) return;
 
-    if (mode === "component") {
+    if (
+      mode === "component"
+    ) {
       checkComponent();
     }
 
-    if (mode === "guided") {
+    if (
+      mode === "guided"
+    ) {
       checkGuided();
     }
   }
 );
 
 
-/* ================================
-   ANALYTICS TIME PERIOD
-================================ */
+/* =========================
+   ANALYTICS
+========================= */
 
-let periodType = "month";
-let periodOffset = 0;
+let periodType =
+  "month";
+
+let periodOffset =
+  0;
+
 
 function startOfDay(date) {
-  const d = new Date(date);
-  d.setHours(0,0,0,0);
+
+  const d =
+    new Date(date);
+
+  d.setHours(
+    0,0,0,0
+  );
+
   return d;
 }
 
+
 function periodRange() {
 
-  const now = new Date();
+  const now =
+    new Date();
 
-  if (periodType === "all") {
+  if (
+    periodType === "all"
+  ) {
     return {
-      start: null,
-      end: null,
-      label: "All Time"
+      start:null,
+      end:null,
+      label:"All Time"
     };
   }
 
-  if (periodType === "day") {
+
+  if (
+    periodType === "day"
+  ) {
 
     const d =
       startOfDay(now);
 
     d.setDate(
-      d.getDate() + periodOffset
+      d.getDate() +
+      periodOffset
     );
 
     const end =
@@ -1352,18 +1675,23 @@ function periodRange() {
     return {
       start:d,
       end:end,
-      label:d.toLocaleDateString(
-        undefined,
-        {
-          month:"short",
-          day:"numeric",
-          year:"numeric"
-        }
-      )
+
+      label:
+        d.toLocaleDateString(
+          undefined,
+          {
+            month:"short",
+            day:"numeric",
+            year:"numeric"
+          }
+        )
     };
   }
 
-  if (periodType === "week") {
+
+  if (
+    periodType === "week"
+  ) {
 
     const d =
       startOfDay(now);
@@ -1394,20 +1722,28 @@ function periodRange() {
     return {
       start:d,
       end:end,
+
       label:
         d.toLocaleDateString(
           undefined,
-          {month:"short",day:"numeric"}
+          {
+            month:"short",
+            day:"numeric"
+          }
         )
         +
         " – "
         +
         last.toLocaleDateString(
           undefined,
-          {month:"short",day:"numeric"}
+          {
+            month:"short",
+            day:"numeric"
+          }
         )
     };
   }
+
 
   const d =
     new Date(
@@ -1427,20 +1763,20 @@ function periodRange() {
   return {
     start:d,
     end:end,
-    label:d.toLocaleDateString(
-      undefined,
-      {
-        month:"long",
-        year:"numeric"
-      }
-    )
+
+    label:
+      d.toLocaleDateString(
+        undefined,
+        {
+          month:"long",
+          year:"numeric"
+        }
+      )
   };
 }
 
 
-/* ================================
-   ANALYTICS FILTERING
-================================ */
+/* FILTERS */
 
 const monthFilter =
   document.getElementById(
@@ -1467,96 +1803,126 @@ const resultFilter =
     "resultFilter"
   );
 
-months.forEach((m,i) => {
-  const option =
-    document.createElement("option");
 
-  option.value = i;
-  option.textContent = m;
+months.forEach(
+  (m,i) => {
 
-  monthFilter.appendChild(option);
-});
+    const option =
+      document.createElement(
+        "option"
+      );
 
-weekdays.forEach((d,i) => {
-  const option =
-    document.createElement("option");
+    option.value = i;
+    option.textContent = m;
 
-  option.value = i;
-  option.textContent = d;
+    monthFilter
+      .appendChild(option);
+  }
+);
 
-  weekdayFilter.appendChild(option);
-});
+
+weekdays.forEach(
+  (d,i) => {
+
+    const option =
+      document.createElement(
+        "option"
+      );
+
+    option.value = i;
+    option.textContent = d;
+
+    weekdayFilter
+      .appendChild(option);
+  }
+);
+
 
 function filteredAttempts() {
 
   const range =
     periodRange();
 
-  return birthdateHistory.filter(a => {
+  return birthdateHistory
+    .filter(a => {
 
-    const time =
-      new Date(a.timestamp);
+      const time =
+        new Date(
+          a.timestamp
+        );
 
-    if (
-      range.start &&
-      time < range.start
-    ) return false;
+      if (
+        range.start &&
+        time < range.start
+      ) return false;
 
-    if (
-      range.end &&
-      time >= range.end
-    ) return false;
+      if (
+        range.end &&
+        time >= range.end
+      ) return false;
 
-    if (
-      monthFilter.value !== "all" &&
-      a.testMonth !==
-        Number(monthFilter.value)
-    ) return false;
+      if (
+        monthFilter.value !==
+          "all" &&
+        a.testMonth !==
+          Number(
+            monthFilter.value
+          )
+      ) return false;
 
-    if (
-      weekdayFilter.value !== "all" &&
-      a.correctWeekday !==
-        Number(weekdayFilter.value)
-    ) return false;
+      if (
+        weekdayFilter.value !==
+          "all" &&
+        a.correctWeekday !==
+          Number(
+            weekdayFilter.value
+          )
+      ) return false;
 
-    if (
-      centuryFilter.value !== "all" &&
-      a.century !==
-        Number(centuryFilter.value)
-    ) return false;
+      if (
+        centuryFilter.value !==
+          "all" &&
+        a.century !==
+          Number(
+            centuryFilter.value
+          )
+      ) return false;
 
-    if (
-      leapFilter.value === "yes" &&
-      !a.leapAdjustment
-    ) return false;
+      if (
+        leapFilter.value ===
+          "yes" &&
+        !a.leapAdjustment
+      ) return false;
 
-    if (
-      leapFilter.value === "no" &&
-      a.leapAdjustment
-    ) return false;
+      if (
+        leapFilter.value ===
+          "no" &&
+        a.leapAdjustment
+      ) return false;
 
-    if (
-      resultFilter.value === "correct" &&
-      !a.correct
-    ) return false;
+      if (
+        resultFilter.value ===
+          "correct" &&
+        !a.correct
+      ) return false;
 
-    if (
-      resultFilter.value === "wrong" &&
-      a.correct
-    ) return false;
+      if (
+        resultFilter.value ===
+          "wrong" &&
+        a.correct
+      ) return false;
 
-    return true;
-  });
+      return true;
+    });
 }
 
 
-/* ================================
-   ANALYTICS METRICS
-================================ */
+/* STAT CALCULATION */
 
 function statsFor(list) {
 
   if (!list.length) {
+
     return {
       attempts:0,
       accuracy:null,
@@ -1566,14 +1932,18 @@ function statsFor(list) {
   }
 
   const correct =
-    list.filter(a => a.correct)
-        .length;
+    list.filter(
+      a => a.correct
+    ).length;
 
   const times =
-    list.map(a => a.seconds);
+    list.map(
+      a => a.seconds
+    );
 
   return {
-    attempts:list.length,
+    attempts:
+      list.length,
 
     accuracy:
       correct /
@@ -1584,17 +1954,18 @@ function statsFor(list) {
       times.reduce(
         (a,b) => a+b,
         0
-      ) / times.length,
+      ) /
+      times.length,
 
     best:
-      Math.min(...times)
+      Math.min(
+        ...times
+      )
   };
 }
 
 
-/* ================================
-   BREAKDOWNS
-================================ */
+/* BREAKDOWN */
 
 function renderBreakdown(
   container,
@@ -1619,7 +1990,9 @@ function renderBreakdown(
 
       const subset =
         list.filter(
-          a => getter(a) === index
+          a =>
+            getter(a) ===
+            index
         );
 
       if (!subset.length)
@@ -1629,7 +2002,9 @@ function renderBreakdown(
         statsFor(subset);
 
       const row =
-        document.createElement("div");
+        document.createElement(
+          "div"
+        );
 
       row.className =
         "breakdown-row";
@@ -1641,15 +2016,14 @@ function renderBreakdown(
         <span>${s.average.toFixed(1)}s</span>
       `;
 
-      container.appendChild(row);
+      container
+        .appendChild(row);
     }
   );
 }
 
 
-/* ================================
-   HISTORY DISPLAY
-================================ */
+/* HISTORY */
 
 function renderHistory(list) {
 
@@ -1658,13 +2032,16 @@ function renderHistory(list) {
       "history"
     );
 
-  container.innerHTML = "";
+  container.innerHTML =
+    "";
 
   if (!list.length) {
+
     container.innerHTML =
       `<div class="empty">
         No attempts in this period.
        </div>`;
+
     return;
   }
 
@@ -1677,7 +2054,9 @@ function renderHistory(list) {
     .forEach(a => {
 
       const row =
-        document.createElement("div");
+        document.createElement(
+          "div"
+        );
 
       row.className =
         "history-row";
@@ -1685,15 +2064,17 @@ function renderHistory(list) {
       const testedDate =
         `${months[a.testMonth]} ${a.testDay}, ${a.testYear}`;
 
-      const attemptDate =
+      const practiced =
         new Date(
           a.timestamp
         ).toLocaleString();
 
       const result =
         a.correct
-          ? `✓ ${weekdays[a.correctWeekday]}`
-          : `✕ ${weekdays[a.chosenWeekday]} → ${weekdays[a.correctWeekday]}`;
+          ?
+          `✓ ${weekdays[a.correctWeekday]}`
+          :
+          `✕ ${weekdays[a.chosenWeekday]} → ${weekdays[a.correctWeekday]}`;
 
       row.innerHTML = `
         <div class="history-main">
@@ -1702,18 +2083,18 @@ function renderHistory(list) {
         </div>
 
         <div class="history-sub">
-          ${testedDate} • practiced ${attemptDate}
+          ${testedDate}
+          • practiced ${practiced}
         </div>
       `;
 
-      container.appendChild(row);
+      container
+        .appendChild(row);
     });
 }
 
 
-/* ================================
-   RENDER ANALYTICS
-================================ */
+/* RENDER ANALYTICS */
 
 function renderAnalytics() {
 
@@ -1741,21 +2122,24 @@ function renderAnalytics() {
   ).textContent =
     s.accuracy === null
       ? "—"
-      : s.accuracy.toFixed(1) + "%";
+      : s.accuracy.toFixed(1) +
+        "%";
 
   document.getElementById(
     "statAverage"
   ).textContent =
     s.average === null
       ? "—"
-      : s.average.toFixed(1) + "s";
+      : s.average.toFixed(1) +
+        "s";
 
   document.getElementById(
     "statBest"
   ).textContent =
     s.best === null
       ? "—"
-      : s.best.toFixed(1) + "s";
+      : s.best.toFixed(1) +
+        "s";
 
   renderBreakdown(
     document.getElementById(
@@ -1773,13 +2157,13 @@ function renderAnalytics() {
     a => a.correctWeekday
   );
 
-  renderHistory(list);
+  renderHistory(
+    list
+  );
 }
 
 
-/* ================================
-   ANALYTICS CONTROLS
-================================ */
+/* ANALYTICS CONTROLS */
 
 document
 .querySelectorAll(
@@ -1800,7 +2184,9 @@ document
           )
       );
 
-    btn.classList.add("active");
+    btn.classList.add(
+      "active"
+    );
 
     periodType =
       btn.dataset.period;
@@ -1811,29 +2197,34 @@ document
   };
 });
 
+
 document.getElementById(
   "periodBack"
 ).onclick = () => {
 
-  if (periodType === "all")
-    return;
+  if (
+    periodType === "all"
+  ) return;
 
   periodOffset--;
 
   renderAnalytics();
 };
 
+
 document.getElementById(
   "periodForward"
 ).onclick = () => {
 
-  if (periodType === "all")
-    return;
+  if (
+    periodType === "all"
+  ) return;
 
   periodOffset++;
 
   renderAnalytics();
 };
+
 
 [
   monthFilter,
@@ -1841,16 +2232,15 @@ document.getElementById(
   centuryFilter,
   leapFilter,
   resultFilter
-].forEach(el => {
+]
+.forEach(
+  el =>
+    el.onchange =
+      renderAnalytics
+);
 
-  el.onchange =
-    renderAnalytics;
-});
 
-
-/* ================================
-   RESET HISTORY
-================================ */
+/* RESET HISTORY */
 
 document.getElementById(
   "resetHistory"
@@ -1871,11 +2261,11 @@ document.getElementById(
 };
 
 
-/* ================================
-   MODES
-================================ */
+/* MODE CONTROL */
 
-function setMode(newMode) {
+function setMode(
+  newMode
+) {
 
   mode = newMode;
 
@@ -1887,85 +2277,114 @@ function setMode(newMode) {
       ? "block"
       : "none";
 
-  if (mode === "sequence")
+  if (
+    mode === "sequence"
+  ) {
     startSequence();
+  }
 
-  if (mode === "position") {
+  if (
+    mode === "position"
+  ) {
     positionDeck = [];
     newPositionQuestion();
   }
 
-  if (mode === "month") {
+  if (
+    mode === "month"
+  ) {
     monthDeck = [];
     newMonthQuestion();
   }
 
-  if (mode === "formula") {
+  if (
+    mode === "formula"
+  ) {
     formulaDeck = [];
     newFormulaQuestion();
   }
 
-  if (mode === "component")
+  if (
+    mode === "component"
+  ) {
     newComponentQuestion();
+  }
 
-  if (mode === "guided")
+  if (
+    mode === "guided"
+  ) {
     newGuidedDate();
+  }
 
-  if (mode === "birthdate") {
+  if (
+    mode === "birthdate"
+  ) {
     newBirthdateTest();
     renderAnalytics();
   }
 }
 
+
 modeButtons.sequence.onclick =
-  () => setMode("sequence");
+  () =>
+    setMode("sequence");
 
 modeButtons.position.onclick =
-  () => setMode("position");
+  () =>
+    setMode("position");
 
 modeButtons.month.onclick =
-  () => setMode("month");
+  () =>
+    setMode("month");
 
 modeButtons.formula.onclick =
-  () => setMode("formula");
+  () =>
+    setMode("formula");
 
 modeButtons.component.onclick =
-  () => setMode("component");
+  () =>
+    setMode("component");
 
 modeButtons.guided.onclick =
-  () => setMode("guided");
+  () =>
+    setMode("guided");
 
 modeButtons.birthdate.onclick =
-  () => setMode("birthdate");
+  () =>
+    setMode("birthdate");
+
 
 document.getElementById(
   "restartBtn"
 ).onclick =
-  () => setMode(mode);
+  () =>
+    setMode(mode);
 
 
-/* ================================
-   SESSION TIMER
-================================ */
+/* SESSION TIMER */
 
-setInterval(() => {
+setInterval(
+  () => {
 
-  if (startTime !== null) {
+    if (
+      startTime !== null
+    ) {
 
-    timeEl.textContent =
-      (
-        (Date.now() -
-          startTime) /
-        1000
-      ).toFixed(1);
-  }
+      timeEl.textContent =
+        (
+          (
+            Date.now() -
+            startTime
+          ) / 1000
+        ).toFixed(1);
+    }
 
-},100);
+  },
+  100
+);
 
 
-/* ================================
-   START
-================================ */
+/* START */
 
 setMode("sequence");
 
