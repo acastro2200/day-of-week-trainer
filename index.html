@@ -1,0 +1,1966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0d0f14">
+<title>Day-of-Week Trainer</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #0d0f14;
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+main {
+  width: 100%;
+  max-width: 650px;
+  margin: 0 auto;
+  padding: 18px;
+  text-align: center;
+}
+
+h1 {
+  margin: 8px 0 20px;
+  font-size: 28px;
+}
+
+h3 {
+  margin: 18px 0 8px;
+  color: #888;
+  font-size: 11px;
+  letter-spacing: 2px;
+}
+
+button, select {
+  border: 1px solid #444;
+  border-radius: 11px;
+  background: #242832;
+  color: white;
+  padding: 12px 8px;
+  font-size: 14px;
+}
+
+button { cursor: pointer; }
+button:active { transform: scale(.97); }
+
+button.active {
+  background: white;
+  color: #111;
+  border-color: white;
+  font-weight: bold;
+}
+
+.mode-grid {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 8px;
+}
+
+.stats {
+  display: flex;
+  justify-content: space-around;
+  gap: 5px;
+  margin: 20px 0 14px;
+  padding: 13px 5px;
+  background: #181b23;
+  border-radius: 14px;
+  font-size: 14px;
+}
+
+#modeName {
+  margin-top: 18px;
+  color: #777;
+  font-size: 11px;
+  letter-spacing: 2px;
+  font-weight: bold;
+}
+
+#formula {
+  min-height: 32px;
+  margin: 14px 0 4px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+#prompt {
+  min-height: 42px;
+  margin: 12px 0 4px;
+  font-size: 29px;
+}
+
+#instruction {
+  min-height: 24px;
+  margin: 4px 0 14px;
+  color: #aaa;
+}
+
+#work {
+  min-height: 35px;
+  margin: 8px 0 12px;
+  color: #bbb;
+  line-height: 1.5;
+}
+
+#answer {
+  width: 100%;
+  height: 70px;
+  border: 3px solid #555;
+  border-radius: 17px;
+  outline: none;
+  background: #111;
+  color: white;
+  text-align: center;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+#answer:focus { border-color: white; }
+
+#checkBtn {
+  width: 100%;
+  margin-top: 8px;
+  display: none;
+}
+
+#choiceArea {
+  display: none;
+  grid-template-columns: repeat(3,1fr);
+  gap: 8px;
+}
+
+#weekdayArea {
+  display: none;
+  grid-template-columns: repeat(4,1fr);
+  gap: 8px;
+}
+
+#weekdayArea button {
+  padding: 15px 5px;
+  font-size: 15px;
+}
+
+#feedback {
+  min-height: 30px;
+  margin: 14px 0;
+  font-size: 18px;
+}
+
+.restart {
+  background: transparent;
+  color: #aaa;
+}
+
+/* ANALYTICS */
+
+#analytics {
+  display: none;
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid #333;
+  text-align: left;
+}
+
+.analytics-title {
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.period-tabs {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 5px;
+}
+
+.period-nav {
+  display: grid;
+  grid-template-columns: 50px 1fr 50px;
+  gap: 6px;
+  margin: 8px 0 12px;
+}
+
+#periodLabel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #181b23;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+.analytics-metrics {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 6px;
+  margin: 12px 0;
+}
+
+.metric {
+  background: #181b23;
+  padding: 11px 4px;
+  border-radius: 11px;
+  text-align: center;
+}
+
+.metric strong {
+  display: block;
+  font-size: 18px;
+}
+
+.metric small {
+  color: #888;
+  font-size: 10px;
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.filters select {
+  width: 100%;
+}
+
+.breakdown {
+  margin-top: 18px;
+}
+
+.breakdown-row {
+  display: grid;
+  grid-template-columns: 1.5fr .7fr .7fr .7fr;
+  gap: 5px;
+  padding: 7px 4px;
+  border-bottom: 1px solid #252832;
+  font-size: 13px;
+}
+
+.breakdown-head {
+  color: #777;
+  font-size: 11px;
+}
+
+.history {
+  max-height: 350px;
+  overflow-y: auto;
+  margin-top: 8px;
+}
+
+.history-row {
+  padding: 9px 4px;
+  border-bottom: 1px solid #252832;
+  font-size: 13px;
+}
+
+.history-main {
+  display: flex;
+  justify-content: space-between;
+}
+
+.history-sub {
+  color: #888;
+  margin-top: 3px;
+  font-size: 11px;
+}
+
+.danger {
+  width: 100%;
+  margin-top: 20px;
+  background: transparent;
+  color: #999;
+}
+
+.empty {
+  text-align: center;
+  color: #777;
+  padding: 18px;
+}
+
+@media (max-width: 500px) {
+  main { padding: 14px; }
+
+  .analytics-metrics {
+    grid-template-columns: repeat(2,1fr);
+  }
+
+  .period-tabs button {
+    font-size: 11px;
+    padding: 10px 2px;
+  }
+}
+</style>
+</head>
+
+<body>
+<main>
+
+<h1>Day-of-Week Trainer</h1>
+
+<h3>MONTH CODES</h3>
+<div class="mode-grid">
+  <button id="sequenceBtn">Sequence</button>
+  <button id="positionBtn">Random Position</button>
+  <button id="monthBtn">Random Month</button>
+</div>
+
+<h3>FORMULA & CALCULATION</h3>
+<div class="mode-grid">
+  <button id="formulaBtn">Formula Recall</button>
+  <button id="componentBtn">Components</button>
+  <button id="guidedBtn">Guided Date</button>
+  <button id="birthdateBtn">Birthdate Test</button>
+</div>
+
+<div class="stats">
+  <span>Score <b id="score">0</b></span>
+  <span>Streak <b id="streak">0</b></span>
+  <span>Time <b id="time">0.0</b>s</span>
+</div>
+
+<div id="modeName"></div>
+<div id="formula"></div>
+<h2 id="prompt"></h2>
+<p id="instruction"></p>
+<div id="work"></div>
+
+<input id="answer" type="tel" inputmode="numeric" autocomplete="off">
+<button id="checkBtn">Check</button>
+
+<div id="choiceArea"></div>
+
+<div id="weekdayArea">
+  <button data-day="0">Sun</button>
+  <button data-day="1">Mon</button>
+  <button data-day="2">Tue</button>
+  <button data-day="3">Wed</button>
+  <button data-day="4">Thu</button>
+  <button data-day="5">Fri</button>
+  <button data-day="6">Sat</button>
+</div>
+
+<h2 id="feedback"></h2>
+
+<button id="restartBtn" class="restart">Restart Mode</button>
+
+
+<!-- BIRTHDATE ANALYTICS -->
+
+<section id="analytics">
+
+<h2 class="analytics-title">Birthdate Stats</h2>
+
+<div class="period-tabs">
+  <button data-period="day">Day</button>
+  <button data-period="week">Week</button>
+  <button data-period="month" class="active">Month</button>
+  <button data-period="all">All Time</button>
+</div>
+
+<div class="period-nav">
+  <button id="periodBack">←</button>
+  <div id="periodLabel"></div>
+  <button id="periodForward">→</button>
+</div>
+
+<div class="analytics-metrics">
+  <div class="metric">
+    <strong id="statAttempts">0</strong>
+    <small>ATTEMPTS</small>
+  </div>
+
+  <div class="metric">
+    <strong id="statAccuracy">—</strong>
+    <small>ACCURACY</small>
+  </div>
+
+  <div class="metric">
+    <strong id="statAverage">—</strong>
+    <small>AVG SPEED</small>
+  </div>
+
+  <div class="metric">
+    <strong id="statBest">—</strong>
+    <small>BEST</small>
+  </div>
+</div>
+
+<h3>FILTER TESTED DATES</h3>
+
+<div class="filters">
+
+<select id="monthFilter">
+  <option value="all">All Months</option>
+</select>
+
+<select id="weekdayFilter">
+  <option value="all">All Weekdays</option>
+</select>
+
+<select id="centuryFilter">
+  <option value="all">All Centuries</option>
+  <option value="1900">1900s</option>
+  <option value="2000">2000s</option>
+</select>
+
+<select id="leapFilter">
+  <option value="all">All Dates</option>
+  <option value="yes">Leap Adjustment</option>
+  <option value="no">No Leap Adjustment</option>
+</select>
+
+<select id="resultFilter">
+  <option value="all">All Results</option>
+  <option value="correct">Correct Only</option>
+  <option value="wrong">Wrong Only</option>
+</select>
+
+</div>
+
+<div class="breakdown">
+  <h3>BY TESTED MONTH</h3>
+  <div id="monthBreakdown"></div>
+</div>
+
+<div class="breakdown">
+  <h3>BY CORRECT WEEKDAY</h3>
+  <div id="weekdayBreakdown"></div>
+</div>
+
+<div class="breakdown">
+  <h3>ATTEMPT HISTORY</h3>
+  <div id="history" class="history"></div>
+</div>
+
+<button id="resetHistory" class="danger">
+  Reset Birthdate History
+</button>
+
+</section>
+
+</main>
+
+<script>
+
+/* ================================
+   DATA
+================================ */
+
+const monthCodes = [6,2,2,5,0,3,5,1,4,6,2,4];
+const sequence = monthCodes.join("");
+
+const months = [
+  "January","February","March","April",
+  "May","June","July","August",
+  "September","October","November","December"
+];
+
+const weekdays = [
+  "Sunday","Monday","Tuesday","Wednesday",
+  "Thursday","Friday","Saturday"
+];
+
+
+/* ================================
+   ELEMENTS
+================================ */
+
+const answer = document.getElementById("answer");
+const checkBtn = document.getElementById("checkBtn");
+
+const promptEl = document.getElementById("prompt");
+const instruction = document.getElementById("instruction");
+const feedback = document.getElementById("feedback");
+const formulaEl = document.getElementById("formula");
+const work = document.getElementById("work");
+const modeName = document.getElementById("modeName");
+
+const scoreEl = document.getElementById("score");
+const streakEl = document.getElementById("streak");
+const timeEl = document.getElementById("time");
+
+const choiceArea = document.getElementById("choiceArea");
+const weekdayArea = document.getElementById("weekdayArea");
+
+const analytics = document.getElementById("analytics");
+
+const modeButtons = {
+  sequence: document.getElementById("sequenceBtn"),
+  position: document.getElementById("positionBtn"),
+  month: document.getElementById("monthBtn"),
+  formula: document.getElementById("formulaBtn"),
+  component: document.getElementById("componentBtn"),
+  guided: document.getElementById("guidedBtn"),
+  birthdate: document.getElementById("birthdateBtn")
+};
+
+
+/* ================================
+   STATE
+================================ */
+
+let mode = "sequence";
+
+let score = 0;
+let streak = 0;
+let startTime = null;
+
+let currentIndex = 0;
+let currentDate = null;
+let currentComponent = null;
+let guidedStep = 0;
+
+let positionDeck = [];
+let monthDeck = [];
+let formulaDeck = [];
+
+let birthdateStart = null;
+let birthdateLocked = false;
+
+
+/* ================================
+   HISTORY STORAGE
+================================ */
+
+const STORAGE_KEY = "dayTrainerBirthdateHistoryV1";
+
+function loadHistory() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+  } catch {
+    return [];
+  }
+}
+
+let birthdateHistory = loadHistory();
+
+function saveHistory() {
+  localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify(birthdateHistory)
+  );
+}
+
+
+/* ================================
+   HELPERS
+================================ */
+
+function shuffle(array) {
+  const copy = [...array];
+
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i],copy[j]] = [copy[j],copy[i]];
+  }
+
+  return copy;
+}
+
+function startTimer() {
+  if (startTime === null) {
+    startTime = Date.now();
+  }
+}
+
+function resetStats() {
+  score = 0;
+  streak = 0;
+  startTime = null;
+
+  scoreEl.textContent = "0";
+  streakEl.textContent = "0";
+  timeEl.textContent = "0.0";
+}
+
+function markCorrect() {
+  score++;
+  streak++;
+
+  scoreEl.textContent = score;
+  streakEl.textContent = streak;
+
+  feedback.textContent = "✓";
+}
+
+function markWrong(correctAnswer) {
+  streak = 0;
+  streakEl.textContent = "0";
+
+  feedback.textContent = "✕ " + correctAnswer;
+}
+
+function hideInputs() {
+  answer.style.display = "none";
+  checkBtn.style.display = "none";
+  choiceArea.style.display = "none";
+  weekdayArea.style.display = "none";
+}
+
+function clearDisplay() {
+  promptEl.textContent = "";
+  instruction.textContent = "";
+  feedback.textContent = "";
+  formulaEl.textContent = "";
+  work.textContent = "";
+
+  choiceArea.innerHTML = "";
+
+  hideInputs();
+}
+
+function showNumberInput(withCheck = false) {
+  hideInputs();
+
+  answer.style.display = "block";
+  answer.value = "";
+
+  if (withCheck) {
+    checkBtn.style.display = "block";
+  }
+
+  setTimeout(() => answer.focus(),50);
+}
+
+function setActiveButton() {
+  Object.values(modeButtons).forEach(btn =>
+    btn.classList.remove("active")
+  );
+
+  modeButtons[mode].classList.add("active");
+}
+
+
+/* ================================
+   DATE MATH
+================================ */
+
+function isLeapYear(year) {
+  return (
+    year % 400 === 0 ||
+    (year % 4 === 0 && year % 100 !== 0)
+  );
+}
+
+function generateDate() {
+  const year =
+    1900 + Math.floor(Math.random() * 200);
+
+  const month =
+    Math.floor(Math.random() * 12);
+
+  const days =
+    new Date(year,month + 1,0).getDate();
+
+  const day =
+    1 + Math.floor(Math.random() * days);
+
+  return {year,month,day};
+}
+
+function calculate(d) {
+  const Y = d.year % 100;
+  const Q = Math.floor(Y / 4);
+  const B = d.year < 2000 ? 1 : 0;
+
+  const L =
+    isLeapYear(d.year) && d.month <= 1
+      ? -1
+      : 0;
+
+  const M = monthCodes[d.month];
+  const D = d.day;
+
+  const total =
+    Y + Q + B + L + M + D;
+
+  const remainder =
+    ((total % 7) + 7) % 7;
+
+  return {Y,Q,B,L,M,D,total,remainder};
+}
+
+function formatDate(d) {
+  return `${months[d.month]} ${d.day}, ${d.year}`;
+}
+
+
+/* ================================
+   MONTH DRILLS
+================================ */
+
+function nextFromDeck(type) {
+
+  if (type === "position") {
+    if (!positionDeck.length) {
+      positionDeck =
+        shuffle([...Array(12).keys()]);
+    }
+
+    return positionDeck.pop();
+  }
+
+  if (!monthDeck.length) {
+    monthDeck =
+      shuffle([...Array(12).keys()]);
+  }
+
+  return monthDeck.pop();
+}
+
+function startSequence() {
+  clearDisplay();
+
+  modeName.textContent = "SEQUENCE";
+
+  instruction.textContent =
+    "Type all 12 month codes from memory";
+
+  showNumberInput();
+}
+
+function newPositionQuestion() {
+  clearDisplay();
+
+  currentIndex =
+    nextFromDeck("position");
+
+  modeName.textContent =
+    "RANDOM POSITION";
+
+  promptEl.textContent =
+    `Position #${currentIndex + 1}`;
+
+  instruction.textContent =
+    "What is the code?";
+
+  showNumberInput();
+}
+
+function newMonthQuestion() {
+  clearDisplay();
+
+  currentIndex =
+    nextFromDeck("month");
+
+  modeName.textContent =
+    "RANDOM MONTH";
+
+  promptEl.textContent =
+    months[currentIndex];
+
+  instruction.textContent =
+    "What is this month's code?";
+
+  showNumberInput();
+}
+
+
+/* ================================
+   FORMULA RECALL
+================================ */
+
+const formulaParts = [
+  ["___ + ⌊Y/4⌋ + B + L + M + D",
+   ["Y","B","M"],"Y"],
+
+  ["Y + ___ + B + L + M + D",
+   ["⌊Y/4⌋","Y/2","B"],"⌊Y/4⌋"],
+
+  ["Y + ⌊Y/4⌋ + ___ + L + M + D",
+   ["B","M","D"],"B"],
+
+  ["Y + ⌊Y/4⌋ + B + ___ + M + D",
+   ["L","B","Y"],"L"],
+
+  ["Y + ⌊Y/4⌋ + B + L + ___ + D",
+   ["M","D","B"],"M"],
+
+  ["Y + ⌊Y/4⌋ + B + L + M + ___",
+   ["D","Y","L"],"D"]
+];
+
+function newFormulaQuestion() {
+  clearDisplay();
+
+  if (!formulaDeck.length) {
+    formulaDeck =
+      shuffle([...Array(6).keys()]);
+  }
+
+  const q =
+    formulaParts[formulaDeck.pop()];
+
+  modeName.textContent =
+    "FORMULA RECALL";
+
+  formulaEl.textContent = q[0];
+
+  instruction.textContent =
+    "What belongs in the blank?";
+
+  choiceArea.style.display = "grid";
+
+  shuffle(q[1]).forEach(choice => {
+
+    const btn =
+      document.createElement("button");
+
+    btn.textContent = choice;
+
+    btn.onclick = () => {
+
+      startTimer();
+
+      if (choice === q[2]) {
+        markCorrect();
+
+        setTimeout(
+          newFormulaQuestion,
+          350
+        );
+      } else {
+        markWrong(q[2]);
+
+        setTimeout(
+          newFormulaQuestion,
+          700
+        );
+      }
+    };
+
+    choiceArea.appendChild(btn);
+  });
+}
+
+
+/* ================================
+   COMPONENTS
+================================ */
+
+const componentNames =
+  ["Y","Q","B","L","M","D"];
+
+function newComponentQuestion() {
+  clearDisplay();
+
+  currentDate = generateDate();
+
+  currentComponent =
+    componentNames[
+      Math.floor(
+        Math.random() *
+        componentNames.length
+      )
+    ];
+
+  const labels = {
+    Y:"Find Y",
+    Q:"Find ⌊Y/4⌋",
+    B:"Find B",
+    L:"Find L",
+    M:"Find M",
+    D:"Find D"
+  };
+
+  modeName.textContent =
+    "COMPONENTS";
+
+  promptEl.textContent =
+    formatDate(currentDate);
+
+  instruction.textContent =
+    labels[currentComponent];
+
+  showNumberInput(true);
+}
+
+function checkComponent() {
+
+  if (
+    answer.value === "" ||
+    answer.value === "-"
+  ) return;
+
+  startTimer();
+
+  const v = calculate(currentDate);
+
+  const expected = {
+    Y:v.Y,
+    Q:v.Q,
+    B:v.B,
+    L:v.L,
+    M:v.M,
+    D:v.D
+  }[currentComponent];
+
+  const typed =
+    Number(answer.value);
+
+  if (typed === expected) {
+    markCorrect();
+
+    setTimeout(
+      newComponentQuestion,
+      400
+    );
+  } else {
+    markWrong(expected);
+
+    setTimeout(
+      newComponentQuestion,
+      850
+    );
+  }
+}
+
+
+/* ================================
+   GUIDED
+================================ */
+
+const guidedLabels = [
+  "Find Y",
+  "Find ⌊Y/4⌋",
+  "Find B",
+  "Find L",
+  "Find M",
+  "Find D",
+  "Add all six terms",
+  "Take the total mod 7"
+];
+
+function newGuidedDate() {
+  clearDisplay();
+
+  currentDate = generateDate();
+  guidedStep = 0;
+
+  modeName.textContent =
+    "GUIDED DATE";
+
+  promptEl.textContent =
+    formatDate(currentDate);
+
+  formulaEl.textContent =
+    "Y + ⌊Y/4⌋ + B + L + M + D";
+
+  instruction.textContent =
+    guidedLabels[0];
+
+  showNumberInput(true);
+}
+
+function guidedValues() {
+  const v = calculate(currentDate);
+
+  return [
+    v.Y,v.Q,v.B,v.L,
+    v.M,v.D,v.total,v.remainder
+  ];
+}
+
+function updateGuidedWork() {
+
+  const v = calculate(currentDate);
+
+  const pieces = [
+    `Y=${v.Y}`,
+    `⌊Y/4⌋=${v.Q}`,
+    `B=${v.B}`,
+    `L=${v.L}`,
+    `M=${v.M}`,
+    `D=${v.D}`
+  ];
+
+  work.textContent =
+    pieces
+      .slice(
+        0,
+        Math.min(guidedStep,6)
+      )
+      .join(" • ");
+}
+
+function checkGuided() {
+
+  if (
+    answer.value === "" ||
+    answer.value === "-"
+  ) return;
+
+  startTimer();
+
+  const expected =
+    guidedValues()[guidedStep];
+
+  const typed =
+    Number(answer.value);
+
+  if (typed !== expected) {
+    feedback.textContent =
+      "✕ TRY AGAIN";
+
+    answer.value = "";
+    answer.focus();
+
+    return;
+  }
+
+  feedback.textContent = "✓";
+
+  guidedStep++;
+
+  if (
+    guidedStep <
+    guidedLabels.length
+  ) {
+    updateGuidedWork();
+
+    instruction.textContent =
+      guidedLabels[guidedStep];
+
+    answer.value = "";
+    answer.focus();
+
+    return;
+  }
+
+  const v = calculate(currentDate);
+
+  score++;
+  streak++;
+
+  scoreEl.textContent = score;
+  streakEl.textContent = streak;
+
+  formulaEl.textContent =
+    `${v.Y} + ${v.Q} + ${v.B} + ${v.L} + ${v.M} + ${v.D} = ${v.total}`;
+
+  work.textContent =
+    `${v.total} mod 7 = ${v.remainder} → ${weekdays[v.remainder]}`;
+
+  feedback.textContent =
+    "✓ COMPLETE";
+
+  hideInputs();
+
+  setTimeout(
+    newGuidedDate,
+    1600
+  );
+}
+
+
+/* ================================
+   BIRTHDATE TEST
+================================ */
+
+function newBirthdateTest() {
+  clearDisplay();
+
+  currentDate = generateDate();
+
+  birthdateLocked = false;
+
+  modeName.textContent =
+    "BIRTHDATE TEST";
+
+  /* Nothing except the birthdate
+     and question is revealed. */
+
+  promptEl.textContent =
+    formatDate(currentDate);
+
+  instruction.textContent =
+    "What day of the week were they born?";
+
+  weekdayArea.style.display =
+    "grid";
+
+  birthdateStart =
+    performance.now();
+}
+
+function submitBirthdate(chosen) {
+
+  if (birthdateLocked) return;
+
+  birthdateLocked = true;
+
+  const elapsed =
+    (performance.now() -
+      birthdateStart) / 1000;
+
+  const v =
+    calculate(currentDate);
+
+  const correct =
+    chosen === v.remainder;
+
+  if (correct) {
+    markCorrect();
+    feedback.textContent =
+      "✓ CORRECT";
+  } else {
+    markWrong(
+      weekdays[v.remainder]
+    );
+  }
+
+  /* Formula appears only
+     AFTER answering. */
+
+  formulaEl.textContent =
+    `${v.Y} + ${v.Q} + ${v.B} + ${v.L} + ${v.M} + ${v.D} = ${v.total}`;
+
+  work.textContent =
+    `${v.total} mod 7 = ${v.remainder} → ${weekdays[v.remainder]} • ${elapsed.toFixed(1)}s`;
+
+  const attempt = {
+    timestamp: Date.now(),
+
+    testYear: currentDate.year,
+    testMonth: currentDate.month,
+    testDay: currentDate.day,
+
+    correctWeekday: v.remainder,
+    chosenWeekday: chosen,
+
+    correct: correct,
+
+    seconds:
+      Math.round(elapsed * 100) / 100,
+
+    century:
+      currentDate.year < 2000
+        ? 1900
+        : 2000,
+
+    leapAdjustment:
+      isLeapYear(currentDate.year) &&
+      currentDate.month <= 1
+  };
+
+  birthdateHistory.push(attempt);
+  saveHistory();
+
+  renderAnalytics();
+
+  setTimeout(
+    newBirthdateTest,
+    1700
+  );
+}
+
+document
+.querySelectorAll("#weekdayArea button")
+.forEach(btn => {
+
+  btn.onclick = () => {
+
+    if (mode !== "birthdate")
+      return;
+
+    submitBirthdate(
+      Number(btn.dataset.day)
+    );
+  };
+});
+
+
+/* ================================
+   MAIN INPUT HANDLER
+================================ */
+
+answer.addEventListener("input",() => {
+
+  answer.value =
+    answer.value.replace(
+      /[^0-9-]/g,
+      ""
+    );
+
+  if (mode === "sequence") {
+
+    startTimer();
+
+    const typed = answer.value;
+
+    if (sequence.startsWith(typed)) {
+
+      feedback.textContent = "✓";
+
+      if (typed === sequence) {
+
+        markCorrect();
+
+        feedback.textContent =
+          "✓ FULL RUN";
+
+        setTimeout(() => {
+          answer.value = "";
+          feedback.textContent =
+            "GO AGAIN";
+          answer.focus();
+        },500);
+      }
+
+    } else {
+
+      streak = 0;
+      streakEl.textContent = "0";
+
+      feedback.textContent =
+        "✕ START AGAIN";
+
+      answer.value = "";
+    }
+
+    return;
+  }
+
+  if (
+    mode === "position" ||
+    mode === "month"
+  ) {
+
+    if (answer.value === "")
+      return;
+
+    startTimer();
+
+    const typed =
+      Number(answer.value);
+
+    const expected =
+      monthCodes[currentIndex];
+
+    answer.value = "";
+
+    if (typed === expected) {
+      markCorrect();
+
+      setTimeout(
+        mode === "position"
+          ? newPositionQuestion
+          : newMonthQuestion,
+        300
+      );
+    } else {
+      markWrong(expected);
+
+      setTimeout(
+        mode === "position"
+          ? newPositionQuestion
+          : newMonthQuestion,
+        700
+      );
+    }
+  }
+});
+
+
+/* Check button */
+
+checkBtn.onclick = () => {
+
+  if (mode === "component") {
+    checkComponent();
+  }
+
+  if (mode === "guided") {
+    checkGuided();
+  }
+};
+
+/* Enter also submits */
+
+answer.addEventListener(
+  "keydown",
+  e => {
+
+    if (e.key !== "Enter")
+      return;
+
+    if (mode === "component") {
+      checkComponent();
+    }
+
+    if (mode === "guided") {
+      checkGuided();
+    }
+  }
+);
+
+
+/* ================================
+   ANALYTICS TIME PERIOD
+================================ */
+
+let periodType = "month";
+let periodOffset = 0;
+
+function startOfDay(date) {
+  const d = new Date(date);
+  d.setHours(0,0,0,0);
+  return d;
+}
+
+function periodRange() {
+
+  const now = new Date();
+
+  if (periodType === "all") {
+    return {
+      start: null,
+      end: null,
+      label: "All Time"
+    };
+  }
+
+  if (periodType === "day") {
+
+    const d =
+      startOfDay(now);
+
+    d.setDate(
+      d.getDate() + periodOffset
+    );
+
+    const end =
+      new Date(d);
+
+    end.setDate(
+      end.getDate() + 1
+    );
+
+    return {
+      start:d,
+      end:end,
+      label:d.toLocaleDateString(
+        undefined,
+        {
+          month:"short",
+          day:"numeric",
+          year:"numeric"
+        }
+      )
+    };
+  }
+
+  if (periodType === "week") {
+
+    const d =
+      startOfDay(now);
+
+    const day =
+      d.getDay();
+
+    d.setDate(
+      d.getDate() -
+      day +
+      periodOffset * 7
+    );
+
+    const end =
+      new Date(d);
+
+    end.setDate(
+      end.getDate() + 7
+    );
+
+    const last =
+      new Date(end);
+
+    last.setDate(
+      last.getDate() - 1
+    );
+
+    return {
+      start:d,
+      end:end,
+      label:
+        d.toLocaleDateString(
+          undefined,
+          {month:"short",day:"numeric"}
+        )
+        +
+        " – "
+        +
+        last.toLocaleDateString(
+          undefined,
+          {month:"short",day:"numeric"}
+        )
+    };
+  }
+
+  const d =
+    new Date(
+      now.getFullYear(),
+      now.getMonth() +
+        periodOffset,
+      1
+    );
+
+  const end =
+    new Date(
+      d.getFullYear(),
+      d.getMonth() + 1,
+      1
+    );
+
+  return {
+    start:d,
+    end:end,
+    label:d.toLocaleDateString(
+      undefined,
+      {
+        month:"long",
+        year:"numeric"
+      }
+    )
+  };
+}
+
+
+/* ================================
+   ANALYTICS FILTERING
+================================ */
+
+const monthFilter =
+  document.getElementById(
+    "monthFilter"
+  );
+
+const weekdayFilter =
+  document.getElementById(
+    "weekdayFilter"
+  );
+
+const centuryFilter =
+  document.getElementById(
+    "centuryFilter"
+  );
+
+const leapFilter =
+  document.getElementById(
+    "leapFilter"
+  );
+
+const resultFilter =
+  document.getElementById(
+    "resultFilter"
+  );
+
+months.forEach((m,i) => {
+  const option =
+    document.createElement("option");
+
+  option.value = i;
+  option.textContent = m;
+
+  monthFilter.appendChild(option);
+});
+
+weekdays.forEach((d,i) => {
+  const option =
+    document.createElement("option");
+
+  option.value = i;
+  option.textContent = d;
+
+  weekdayFilter.appendChild(option);
+});
+
+function filteredAttempts() {
+
+  const range =
+    periodRange();
+
+  return birthdateHistory.filter(a => {
+
+    const time =
+      new Date(a.timestamp);
+
+    if (
+      range.start &&
+      time < range.start
+    ) return false;
+
+    if (
+      range.end &&
+      time >= range.end
+    ) return false;
+
+    if (
+      monthFilter.value !== "all" &&
+      a.testMonth !==
+        Number(monthFilter.value)
+    ) return false;
+
+    if (
+      weekdayFilter.value !== "all" &&
+      a.correctWeekday !==
+        Number(weekdayFilter.value)
+    ) return false;
+
+    if (
+      centuryFilter.value !== "all" &&
+      a.century !==
+        Number(centuryFilter.value)
+    ) return false;
+
+    if (
+      leapFilter.value === "yes" &&
+      !a.leapAdjustment
+    ) return false;
+
+    if (
+      leapFilter.value === "no" &&
+      a.leapAdjustment
+    ) return false;
+
+    if (
+      resultFilter.value === "correct" &&
+      !a.correct
+    ) return false;
+
+    if (
+      resultFilter.value === "wrong" &&
+      a.correct
+    ) return false;
+
+    return true;
+  });
+}
+
+
+/* ================================
+   ANALYTICS METRICS
+================================ */
+
+function statsFor(list) {
+
+  if (!list.length) {
+    return {
+      attempts:0,
+      accuracy:null,
+      average:null,
+      best:null
+    };
+  }
+
+  const correct =
+    list.filter(a => a.correct)
+        .length;
+
+  const times =
+    list.map(a => a.seconds);
+
+  return {
+    attempts:list.length,
+
+    accuracy:
+      correct /
+      list.length *
+      100,
+
+    average:
+      times.reduce(
+        (a,b) => a+b,
+        0
+      ) / times.length,
+
+    best:
+      Math.min(...times)
+  };
+}
+
+
+/* ================================
+   BREAKDOWNS
+================================ */
+
+function renderBreakdown(
+  container,
+  categories,
+  getter
+) {
+
+  container.innerHTML = `
+    <div class="breakdown-row breakdown-head">
+      <span></span>
+      <span>N</span>
+      <span>ACC</span>
+      <span>AVG</span>
+    </div>
+  `;
+
+  const list =
+    filteredAttempts();
+
+  categories.forEach(
+    (name,index) => {
+
+      const subset =
+        list.filter(
+          a => getter(a) === index
+        );
+
+      if (!subset.length)
+        return;
+
+      const s =
+        statsFor(subset);
+
+      const row =
+        document.createElement("div");
+
+      row.className =
+        "breakdown-row";
+
+      row.innerHTML = `
+        <span>${name}</span>
+        <span>${s.attempts}</span>
+        <span>${s.accuracy.toFixed(0)}%</span>
+        <span>${s.average.toFixed(1)}s</span>
+      `;
+
+      container.appendChild(row);
+    }
+  );
+}
+
+
+/* ================================
+   HISTORY DISPLAY
+================================ */
+
+function renderHistory(list) {
+
+  const container =
+    document.getElementById(
+      "history"
+    );
+
+  container.innerHTML = "";
+
+  if (!list.length) {
+    container.innerHTML =
+      `<div class="empty">
+        No attempts in this period.
+       </div>`;
+    return;
+  }
+
+  [...list]
+    .sort(
+      (a,b) =>
+        b.timestamp -
+        a.timestamp
+    )
+    .forEach(a => {
+
+      const row =
+        document.createElement("div");
+
+      row.className =
+        "history-row";
+
+      const testedDate =
+        `${months[a.testMonth]} ${a.testDay}, ${a.testYear}`;
+
+      const attemptDate =
+        new Date(
+          a.timestamp
+        ).toLocaleString();
+
+      const result =
+        a.correct
+          ? `✓ ${weekdays[a.correctWeekday]}`
+          : `✕ ${weekdays[a.chosenWeekday]} → ${weekdays[a.correctWeekday]}`;
+
+      row.innerHTML = `
+        <div class="history-main">
+          <span>${result}</span>
+          <strong>${a.seconds.toFixed(1)}s</strong>
+        </div>
+
+        <div class="history-sub">
+          ${testedDate} • practiced ${attemptDate}
+        </div>
+      `;
+
+      container.appendChild(row);
+    });
+}
+
+
+/* ================================
+   RENDER ANALYTICS
+================================ */
+
+function renderAnalytics() {
+
+  const range =
+    periodRange();
+
+  document.getElementById(
+    "periodLabel"
+  ).textContent =
+    range.label;
+
+  const list =
+    filteredAttempts();
+
+  const s =
+    statsFor(list);
+
+  document.getElementById(
+    "statAttempts"
+  ).textContent =
+    s.attempts;
+
+  document.getElementById(
+    "statAccuracy"
+  ).textContent =
+    s.accuracy === null
+      ? "—"
+      : s.accuracy.toFixed(1) + "%";
+
+  document.getElementById(
+    "statAverage"
+  ).textContent =
+    s.average === null
+      ? "—"
+      : s.average.toFixed(1) + "s";
+
+  document.getElementById(
+    "statBest"
+  ).textContent =
+    s.best === null
+      ? "—"
+      : s.best.toFixed(1) + "s";
+
+  renderBreakdown(
+    document.getElementById(
+      "monthBreakdown"
+    ),
+    months,
+    a => a.testMonth
+  );
+
+  renderBreakdown(
+    document.getElementById(
+      "weekdayBreakdown"
+    ),
+    weekdays,
+    a => a.correctWeekday
+  );
+
+  renderHistory(list);
+}
+
+
+/* ================================
+   ANALYTICS CONTROLS
+================================ */
+
+document
+.querySelectorAll(
+  ".period-tabs button"
+)
+.forEach(btn => {
+
+  btn.onclick = () => {
+
+    document
+      .querySelectorAll(
+        ".period-tabs button"
+      )
+      .forEach(
+        b =>
+          b.classList.remove(
+            "active"
+          )
+      );
+
+    btn.classList.add("active");
+
+    periodType =
+      btn.dataset.period;
+
+    periodOffset = 0;
+
+    renderAnalytics();
+  };
+});
+
+document.getElementById(
+  "periodBack"
+).onclick = () => {
+
+  if (periodType === "all")
+    return;
+
+  periodOffset--;
+
+  renderAnalytics();
+};
+
+document.getElementById(
+  "periodForward"
+).onclick = () => {
+
+  if (periodType === "all")
+    return;
+
+  periodOffset++;
+
+  renderAnalytics();
+};
+
+[
+  monthFilter,
+  weekdayFilter,
+  centuryFilter,
+  leapFilter,
+  resultFilter
+].forEach(el => {
+
+  el.onchange =
+    renderAnalytics;
+});
+
+
+/* ================================
+   RESET HISTORY
+================================ */
+
+document.getElementById(
+  "resetHistory"
+).onclick = () => {
+
+  const sure =
+    confirm(
+      "Delete all saved Birthdate Test history on this device?"
+    );
+
+  if (!sure)
+    return;
+
+  birthdateHistory = [];
+
+  saveHistory();
+  renderAnalytics();
+};
+
+
+/* ================================
+   MODES
+================================ */
+
+function setMode(newMode) {
+
+  mode = newMode;
+
+  resetStats();
+  setActiveButton();
+
+  analytics.style.display =
+    mode === "birthdate"
+      ? "block"
+      : "none";
+
+  if (mode === "sequence")
+    startSequence();
+
+  if (mode === "position") {
+    positionDeck = [];
+    newPositionQuestion();
+  }
+
+  if (mode === "month") {
+    monthDeck = [];
+    newMonthQuestion();
+  }
+
+  if (mode === "formula") {
+    formulaDeck = [];
+    newFormulaQuestion();
+  }
+
+  if (mode === "component")
+    newComponentQuestion();
+
+  if (mode === "guided")
+    newGuidedDate();
+
+  if (mode === "birthdate") {
+    newBirthdateTest();
+    renderAnalytics();
+  }
+}
+
+modeButtons.sequence.onclick =
+  () => setMode("sequence");
+
+modeButtons.position.onclick =
+  () => setMode("position");
+
+modeButtons.month.onclick =
+  () => setMode("month");
+
+modeButtons.formula.onclick =
+  () => setMode("formula");
+
+modeButtons.component.onclick =
+  () => setMode("component");
+
+modeButtons.guided.onclick =
+  () => setMode("guided");
+
+modeButtons.birthdate.onclick =
+  () => setMode("birthdate");
+
+document.getElementById(
+  "restartBtn"
+).onclick =
+  () => setMode(mode);
+
+
+/* ================================
+   SESSION TIMER
+================================ */
+
+setInterval(() => {
+
+  if (startTime !== null) {
+
+    timeEl.textContent =
+      (
+        (Date.now() -
+          startTime) /
+        1000
+      ).toFixed(1);
+  }
+
+},100);
+
+
+/* ================================
+   START
+================================ */
+
+setMode("sequence");
+
+</script>
+</body>
+</html>
